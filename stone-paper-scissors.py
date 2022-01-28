@@ -127,9 +127,6 @@ while True:
     cv2.putText(img, "PLAYER SCORE: " + str(PLAYER_SCORE), (400, 420), cv2.FONT_HERSHEY_PLAIN, 1, (0, 255, 0), 1)
     cv2.putText(img, "COMP SCORE: " + str(COMP_SCORE), (400, 450), cv2.FONT_HERSHEY_PLAIN, 1, (0, 255, 0), 1)
 
-    if sps is not None:
-        print(sps, RESULT)
-
     if sps == RESULT and sps != "":
         sps = None
         ROUND += 1
