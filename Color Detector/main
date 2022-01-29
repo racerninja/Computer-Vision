@@ -1,0 +1,48 @@
+import cv2
+import numpy as np
+import pandas as pd
+
+image = "color.jpg"
+img = cv2.imread(image)
+HEIGHT, WIDTH, _ = img.shape
+
+click = False
+r,g,b = 0,0,0
+xpos,ypos = 0,0
+
+index=["color_name","R","G","B"]
+csv = pd.read_csv('colors.csv', names=index, header=None)
+
+def draw(event,x,y,flags,param):
+    if event == cv2.EVENT_LBUTTONUP:
+        click = True
+        xpos = x
+        ypos = y
+        b,g,r = img[y,x]
+        b,g,r = map(int,[b,g,r])
+
+        cv2.rectangle(img,(0,25), (WIDTH,60), (b,g,r), -1)
+        text = colorName(r,g,b) + ' R=' + str(r) + ' G='+ str(g) + ' B='+ str(b)
+        cv2.putText(img, text, (50,50), 2, 0.8, (255,255,255), 1, cv2.LINE_AA)
+
+        if(r+g+b>=500):
+            cv2.putText(img, text, (50,50), 2, 0.8, (0,0,0), 1, cv2.LINE_AA)
+
+def colorName(R,G,B):
+    minimum = 100
+    for i in range(len(csv)):
+        d = abs(R- int(csv.loc[i,"R"])) + abs(G- int(csv.loc[i,"G"]))+ abs(B- int(csv.loc[i,"B"]))
+        if(d<=minimum):
+            minimum = d
+            cname = csv.loc[i,"color_name"]
+    return cname
+
+while True:
+
+    cv2.imshow("Color Detector", img)
+    cv2.setMouseCallback("Color Detector", draw)
+
+    if cv2.waitKey(1) & 0xFF ==27:
+        break
+
+cv2.destroyAllWindows()
